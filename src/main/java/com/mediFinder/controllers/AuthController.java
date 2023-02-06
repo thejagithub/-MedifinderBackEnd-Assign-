@@ -1,5 +1,6 @@
 package com.mediFinder.controllers;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,11 +19,15 @@ import com.mediFinder.repository.RoleRepository;
 import com.mediFinder.repository.UserRepository;
 import com.mediFinder.security.jwt.JwtUtils;
 import com.mediFinder.security.services.UserDetailsImpl;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,7 +55,7 @@ public class AuthController {
 	RoleRepository roleRepository;
 
 	@Autowired
-	private JavaMailSender mailSender;
+	JavaMailSender mailSender;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -83,7 +88,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
@@ -148,12 +153,23 @@ public class AuthController {
 		return ResponseEntity.ok(new MessageResponse("User registered successfully! \n Please check your email to verify your account."));
 	}
 
-	private void sendVerificationEmail(User user) {
+	public void sendVerificationEmail(User user) throws MessagingException, UnsupportedEncodingException {
 		String subject = "Please verify your account";
 		String senderName = "MediFinder Team";
 		String mailContent = "<p>Dear "+ user.getUsername() + ", </p> ";
 		mailContent += "<p>Please click the link below to verify the registration : </p>";
 		mailContent += "<p>Thank You</p>";
 		mailContent += "<p>The Medifider Team</p>";
+
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+
+		helper.setFrom("thejaraver@gmail.com", senderName);
+		helper.setTo(user.getEmail());
+		helper.setSubject(subject);
+		helper.setText(mailContent,true);
+
+		mailSender.send(message);
+
 	}
 }
