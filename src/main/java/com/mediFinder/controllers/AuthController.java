@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.bytebuddy.utility.RandomString;
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -130,6 +132,9 @@ public class AuthController {
 				}
 			});
 		}
+
+		String randomCode = RandomString.make(64);
+		user.setVerification_code(randomCode);
 
 		user.setRoles(roles);
 		userRepository.save(user);

@@ -37,6 +37,10 @@ public class User {
 	@Size(max = 120)
 	private String password;
 
+	@NotBlank
+	@Size(max = 70)
+	private String verification_code;
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_id"), 
@@ -90,5 +94,13 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public String getVerification_code() {
+		return verification_code;
+	}
+
+	public void setVerification_code(String verification_code) {
+		this.verification_code = verification_code;
 	}
 }
