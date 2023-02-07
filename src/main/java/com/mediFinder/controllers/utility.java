@@ -1,4 +1,4 @@
-package com.mediFinder;
+package com.mediFinder.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 
