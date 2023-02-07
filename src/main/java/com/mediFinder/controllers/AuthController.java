@@ -22,7 +22,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,9 +47,6 @@ public class AuthController {
 
 	@Autowired
 	RoleRepository roleRepository;
-
-	@Autowired
-	private JavaMailSender mailSender;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -137,23 +133,12 @@ public class AuthController {
 			});
 		}
 
-		String randomCode = RandomString.make(64);
-		user.setVerification_code(randomCode);
+//		String randomCode = RandomString.make(64);
+//		user.setVerification_code(randomCode);
 
 		user.setRoles(roles);
 		userRepository.save(user);
 
-		sendVerificationEmail(user);
-
-		return ResponseEntity.ok(new MessageResponse("User registered successfully! \n Please check your email to verify your account."));
-	}
-
-	private void sendVerificationEmail(User user) {
-		String subject = "Please verify your account";
-		String senderName = "MediFinder Team";
-		String mailContent = "<p>Dear "+ user.getUsername() + ", </p> ";
-		mailContent += "<p>Please click the link below to verify the registration : </p>";
-		mailContent += "<p>Thank You</p>";
-		mailContent += "<p>The Medifider Team</p>";
+		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 }
