@@ -56,7 +56,7 @@ public class AuthController {
 	@Autowired
 	JwtUtils jwtUtils;
 
-
+@Autowired
 	private EmailService emailService;
 
 
@@ -144,29 +144,21 @@ public class AuthController {
 
 		user.setRoles(roles);
 
-		//email method
+		EmailDetails userss = new EmailDetails();
+		userss.setRecipient(signUpRequest.getEmail());
 
-
-		// Sending a simple Email
-		//@PostMapping("/sendMail")
-
-
-//		// Sending email with attachment
-//		@PostMapping("/sendMailWithAttachment")
-//		public String sendMailWithAttachment(
-//				@RequestBody EmailDetails details)
-//		{
-//			String status
-//					= emailService.sendMailWithAttachment(details);
-//
-//			return status;
-
+		String status = emailService.sendSimpleMail(userss);
 		userRepository.save(user);
 
 
 
 
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+
+
+
+
+
+		return ResponseEntity.ok(status);
 
 //		public String sendMail(EmailDetails details)
 //		{
@@ -176,7 +168,7 @@ public class AuthController {
 //    }
 	}
 
-	@PostMapping("api/auth/signup")
+	@PostMapping("/signup1")
     public String
     sendMail(@RequestBody EmailDetails details,SignupRequest signUpRequest)
     {

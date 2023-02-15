@@ -5,14 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
 
+
+@Service
 public class EmailServiceImpl implements EmailService{
     @Autowired
     private JavaMailSender javaMailSender;
     @Value("${spring.mail.username}") private String sender;
-
-    //@Override
-    public String sendSimpleMail(EmailDetails details, SignupRequest signUpRequest) {
+    @Override
+    public String sendSimpleMail(EmailDetails emailDetails) {
         try {
 
             // Creating a simple mail message
@@ -21,7 +23,7 @@ public class EmailServiceImpl implements EmailService{
 
             // Setting up necessary details
             mailMessage.setFrom(sender);
-            mailMessage.setTo(signUpRequest.getEmail());
+            mailMessage.setTo(emailDetails.getRecipient());
             mailMessage.setText("Hello User");
             mailMessage.setSubject("Test Subject");
 
@@ -36,8 +38,5 @@ public class EmailServiceImpl implements EmailService{
         }
     }
 
-    @Override
-    public String sendSimpleMail(EmailDetails details) {
-        return null;
-    }
+
 }

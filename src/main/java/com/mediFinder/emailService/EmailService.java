@@ -5,5 +5,5 @@ import com.mediFinder.models.User;
 
 public interface EmailService {
 
-    String sendSimpleMail(EmailDetails details);
+    String sendSimpleMail(EmailDetails emailDetails);
 }
