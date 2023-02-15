@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 //import javax.validation.Valid;
 
+
 import com.mediFinder.models.ERole;
 import com.mediFinder.models.Role;
 import com.mediFinder.models.User;
@@ -17,30 +18,25 @@ import com.mediFinder.payload.response.MessageResponse;
 import com.mediFinder.repository.RoleRepository;
 import com.mediFinder.repository.UserRepository;
 import com.mediFinder.security.jwt.JwtUtils;
-import com.mediFinder.security.services.EmailService;
 import com.mediFinder.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import net.bytebuddy.utility.RandomString;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@Controller
 @RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired
@@ -53,13 +49,12 @@ public class AuthController {
 	RoleRepository roleRepository;
 
 	@Autowired
-	private EmailService emailService;
-
-	@Autowired
 	PasswordEncoder encoder;
 
 	@Autowired
 	JwtUtils jwtUtils;
+
+
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser( @RequestBody LoginRequest loginRequest) {
@@ -140,22 +135,32 @@ public class AuthController {
 			});
 		}
 
-//		String randomCode = RandomString.make(64);
-//		user.setVerification_code(randomCode);
-
-		SimpleMailMessage mailMessage= new SimpleMailMessage();
-		mailMessage.setTo(user.getEmail());
-		mailMessage.setSubject("Complete your registration");
-		mailMessage.setFrom("thejarover@gmail.com");
-		mailMessage.setText("Click below link to complete the registration");
-
-		emailService.sendEmail(mailMessage);
-
-
-
 		user.setRoles(roles);
+
+		//email method
+
+
+		// Sending a simple Email
+		//@PostMapping("/sendMail")
+
+
+//		// Sending email with attachment
+//		@PostMapping("/sendMailWithAttachment")
+//		public String sendMailWithAttachment(
+//				@RequestBody EmailDetails details)
+//		{
+//			String status
+//					= emailService.sendMailWithAttachment(details);
+//
+//			return status;
+
 		userRepository.save(user);
 
+
+
+
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+
+
 	}
 }

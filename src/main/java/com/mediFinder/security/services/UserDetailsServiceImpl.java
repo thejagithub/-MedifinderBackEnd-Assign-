@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import net.bytebuddy.utility.RandomString;
 
 @Service
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class  UserDetailsServiceImpl implements UserDetailsService {
   @Autowired
   UserRepository userRepository;
 
