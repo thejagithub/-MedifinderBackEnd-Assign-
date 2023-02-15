@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 //import javax.validation.Valid;
 
 
+import com.mediFinder.emailService.EmailService;
 import com.mediFinder.models.ERole;
 import com.mediFinder.models.Role;
 import com.mediFinder.models.User;
@@ -33,7 +34,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.mediFinder.emailService.EmailDetails;
+import com.mediFinder.emailService.EmailService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -53,6 +55,9 @@ public class AuthController {
 
 	@Autowired
 	JwtUtils jwtUtils;
+
+
+	private EmailService emailService;
 
 
 
@@ -81,6 +86,8 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
+
+
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
@@ -161,6 +168,21 @@ public class AuthController {
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 
-
+//		public String sendMail(EmailDetails details)
+//		{
+//        String status = emailService.sendSimpleMail(details);
+//
+//        return status;
+//    }
 	}
+
+	@PostMapping("api/auth/signup")
+    public String
+    sendMail(@RequestBody EmailDetails details,SignupRequest signUpRequest)
+    {
+        String status
+                = emailService.sendSimpleMail(details);
+
+        return status;
+    }
 }

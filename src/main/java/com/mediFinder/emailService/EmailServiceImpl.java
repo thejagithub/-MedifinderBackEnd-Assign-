@@ -1,5 +1,6 @@
 package com.mediFinder.emailService;
 
+import com.mediFinder.payload.request.SignupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -11,7 +12,7 @@ public class EmailServiceImpl implements EmailService{
     @Value("${spring.mail.username}") private String sender;
 
     //@Override
-    public String sendSimpleMail(EmailDetails details) {
+    public String sendSimpleMail(EmailDetails details, SignupRequest signUpRequest) {
         try {
 
             // Creating a simple mail message
@@ -20,9 +21,9 @@ public class EmailServiceImpl implements EmailService{
 
             // Setting up necessary details
             mailMessage.setFrom(sender);
-            mailMessage.setTo(details.getRecipient());
-            mailMessage.setText(details.getMsgBody());
-            mailMessage.setSubject(details.getSubject());
+            mailMessage.setTo(signUpRequest.getEmail());
+            mailMessage.setText("Hello User");
+            mailMessage.setSubject("Test Subject");
 
             // Sending the mail
             javaMailSender.send(mailMessage);
@@ -33,5 +34,10 @@ public class EmailServiceImpl implements EmailService{
         catch (Exception e) {
             return "Error while Sending Mail";
         }
+    }
+
+    @Override
+    public String sendSimpleMail(EmailDetails details) {
+        return null;
     }
 }
